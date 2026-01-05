@@ -2,6 +2,7 @@
     "name": "railway-auth",
     "private": true,
     "scripts": {
+      "postinstall": "npm run install:all",
       "install:all": "npm --prefix server i && npm --prefix client i",
       "dev:server": "npm --prefix server run dev",
       "dev:client": "npm --prefix client run dev",
