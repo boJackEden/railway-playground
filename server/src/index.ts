@@ -4,12 +4,35 @@ import dotenv from "dotenv";
 import path from "path";
 import authRoutes from "./routes/auth";
 
-dotenv.config();
-
+// if I am deploying then don't use the dotenv config I have (idiot check)
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 const app = express();
 app.use(express.json());
 
+// figure out why railway is killing my process:
+process.on("SIGTERM", () => {
+  console.log("⚠️ Received SIGTERM (Railway is stopping the container)");
+});
+process.on("SIGINT", () => {
+  console.log("⚠️ Received SIGINT");
+});
+process.on("uncaughtException", (err) => {
+  console.error("❌ uncaughtException", err);
+});
+process.on("unhandledRejection", (reason) => {
+  console.error("❌ unhandledRejection", reason);
+});
+
 // API routes
+app.use((req, _res, next) => {
+  console.log(`[REQ] ${req.method} ${req.url}`);
+  next();
+});
+
+app.get("/", (_req, res) => res.status(200).send("ok"));
+
 app.use("/api/auth", authRoutes);
 
 app.get("/api/health", (_req, res) => res.status(200).send("ok"));
