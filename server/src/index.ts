@@ -45,6 +45,7 @@ app.get("/api/health", (_req, res) => res.status(200).send("ok"));
 if (process.env.NODE_ENV === "production") {
   const clientDistPath = path.join(__dirname, "..", "..", "client", "dist");
   app.use(express.static(clientDistPath));
+  console.log('CLIENT BUILD PATH', clientDistPath)
   app.get(/^(?!\/api).*/, (_req, res) => {
     res.sendFile(path.join(clientDistPath, "index.html"));
   });
