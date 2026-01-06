@@ -30,7 +30,7 @@ const PORT = Number(process.env.PORT) || 5050;
 async function start() {
   await mongoose.connect(process.env.MONGO_URI as string);
   console.log("Mongo connected");
-  app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+  app.listen(PORT, "0.0.0.0", () => console.log(`Server running on ${PORT}`));
 }
 
 start().catch((err) => {
