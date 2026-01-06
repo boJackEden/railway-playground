@@ -1,3 +1,22 @@
+// ================================
+// 🔴 PROCESS-LEVEL DEBUG HANDLERS
+// ================================
+process.on("exit", (code) => {
+  console.log("🛑 process exit event. code =", code);
+});
+
+process.on("beforeExit", (code) => {
+  console.log("🟡 beforeExit event. code =", code);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("❌ uncaughtException", err);
+});
+
+process.on("unhandledRejection", (reason) => {
+  console.error("❌ unhandledRejection", reason);
+});
+
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
@@ -11,27 +30,12 @@ if (process.env.NODE_ENV !== "production") {
 const app = express();
 app.use(express.json());
 
-// figure out why railway is killing my process:
-process.on("SIGTERM", () => {
-  console.log("⚠️ Received SIGTERM (Railway is stopping the container)");
-});
-process.on("SIGINT", () => {
-  console.log("⚠️ Received SIGINT");
-});
-process.on("uncaughtException", (err) => {
-  console.error("❌ uncaughtException", err);
-});
-process.on("unhandledRejection", (reason) => {
-  console.error("❌ unhandledRejection", reason);
-});
 
 // API routes
 app.use((req, _res, next) => {
   console.log(`[REQ] ${req.method} ${req.url}`);
   next();
 });
-
-app.get("/", (_req, res) => res.status(200).send("ok"));
 
 app.use("/api/auth", authRoutes);
 
