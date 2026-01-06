@@ -50,6 +50,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static(clientDistPath));
   console.log('CLIENT BUILD PATH', clientDistPath)
   app.get(/^(?!\/api).*/, (_req, res) => {
+    console.log('IS THIS SERVING ANTYHING OR causing my app to crash?')
     res.sendFile(path.join(clientDistPath, "index.html"));
   });
 }
