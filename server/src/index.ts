@@ -40,6 +40,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 
 app.get("/api/health", (_req, res, next) => {
+  console.log('THE HEALTH CHECK IS BEING CALLED');
   res.status(200).send("ok");
   next();
 });
