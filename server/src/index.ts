@@ -12,9 +12,7 @@ app.use(express.json());
 // API routes
 app.use("/api/auth", authRoutes);
 
-app.get("/api/health", (_req, res) => {
-  res.json({ ok: true });
-});
+app.get("/api/health", (_req, res) => res.status(200).send("ok"));
 
 // Serve client build in production
 if (process.env.NODE_ENV === "production") {
@@ -29,13 +27,14 @@ const PORT = Number(process.env.PORT) || 5050;
 console.log("BOOT NODE_ENV:", process.env.NODE_ENV);
 console.log("BOOT process.env.PORT:", process.env.PORT);
 
-async function start() {
-  await mongoose.connect(process.env.MONGO_URI as string);
-  console.log("Mongo connected");
-  app.listen(PORT, "0.0.0.0", () => console.log(`Server running on ${PORT}`));
-}
-
-start().catch((err) => {
-  console.error(err);
-  process.exit(1);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("LISTENING ON:", PORT);
 });
+
+// Connect AFTER listening so Railway can reach your service
+mongoose
+  .connect(process.env.MONGO_URI as string, {
+    serverSelectionTimeoutMS: 10_000, // fail fast rather than hanging forever
+  })
+  .then(() => console.log("Mongo connected"))
+  .catch((err) => console.error("Mongo connect error:", err));
