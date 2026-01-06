@@ -39,7 +39,10 @@ app.use((req, _res, next) => {
 
 app.use("/api/auth", authRoutes);
 
-app.get("/api/health", (_req, res) => res.status(200).send("ok"));
+app.get("/api/health", (_req, res, next) => {
+  res.status(200).send("ok");
+  next();
+});
 
 // Serve client build in production
 if (process.env.NODE_ENV === "production") {
