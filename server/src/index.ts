@@ -28,16 +28,6 @@ if (process.env.NODE_ENV !== "production") {
   dotenv.config();
 }
 const app = express();
-app.use(express.json());
-
-
-// API routes
-// app.use((req, _res, next) => {
-//   console.log(`[REQ] ${req.method} ${req.url}`);
-//   next();
-// });
-
-app.use("/api/auth", authRoutes);
 
 app.get("/api/health", (_req, res, next) => {
   console.log('THE HEALTH CHECK IS BEING CALLED');
@@ -45,16 +35,22 @@ app.get("/api/health", (_req, res, next) => {
   next();
 });
 
+app.use(express.json());
+
+
+// API routes
+app.use("/api/auth", authRoutes);
+
 // Serve client build in production
-if (process.env.NODE_ENV === "production") {
-  const clientDistPath = path.join(__dirname, "..", "..", "client", "dist");
-  app.use(express.static(clientDistPath));
-  console.log('CLIENT BUILD PATH', clientDistPath)
-  app.get(/^(?!\/api).*/, (_req, res) => {
-    console.log('IS THIS SERVING ANTYHING OR causing my app to crash?')
-    res.sendFile(path.join(clientDistPath, "index.html"));
-  });
-}
+// if (process.env.NODE_ENV === "production") {
+//   const clientDistPath = path.join(__dirname, "..", "..", "client", "dist");
+//   app.use(express.static(clientDistPath));
+//   console.log('CLIENT BUILD PATH', clientDistPath)
+//   app.get(/^(?!\/api).*/, (_req, res) => {
+//     console.log('IS THIS SERVING ANTYHING OR causing my app to crash?')
+//     res.sendFile(path.join(clientDistPath, "index.html"));
+//   });
+// }
 
 const PORT = Number(process.env.PORT) || 5050;
 console.log("BOOT NODE_ENV:", process.env.NODE_ENV);
@@ -65,9 +61,9 @@ app.listen(PORT, "0.0.0.0", () => {
 });
 
 // Connect AFTER listening so Railway can reach your service
-mongoose
-  .connect(process.env.MONGO_URI as string, {
-    serverSelectionTimeoutMS: 10_000, // fail fast rather than hanging forever
-  })
-  .then(() => console.log("Mongo connected"))
-  .catch((err) => console.error("Mongo connect error:", err));
+// mongoose
+//   .connect(process.env.MONGO_URI as string, {
+//     serverSelectionTimeoutMS: 10_000, // fail fast rather than hanging forever
+//   })
+//   .then(() => console.log("Mongo connected"))
+//   .catch((err) => console.error("Mongo connect error:", err));
