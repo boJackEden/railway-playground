@@ -26,6 +26,8 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const PORT = Number(process.env.PORT) || 5050;
+console.log("BOOT NODE_ENV:", process.env.NODE_ENV);
+console.log("BOOT process.env.PORT:", process.env.PORT);
 
 async function start() {
   await mongoose.connect(process.env.MONGO_URI as string);
